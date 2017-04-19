@@ -29,6 +29,7 @@ class atom(BaseProfile):
         self.move(self.downloads.mac.unzip(), '/Applications/')
 
     def install_linux(self):
+        print('test')
         if distribution is 'arch':
             return self.install_package(['pacman'], 'atom')
 
