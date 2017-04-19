@@ -29,8 +29,7 @@ class atom(BaseProfile):
         self.move(self.downloads.mac.unzip(), '/Applications/')
 
     def install_linux(self):
-        print(distribution)
-        if distribution is 'arch':
+        if distribution == 'arch':
             return self.install_package(['pacman'], 'atom')
 
         if does_package_exist('yum'):
