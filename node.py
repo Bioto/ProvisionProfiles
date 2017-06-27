@@ -1,6 +1,6 @@
 import logging
 
-from provision import Profile
+from provision.profile import Profile
 
 
 class node(Profile):
