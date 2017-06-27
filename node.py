@@ -10,7 +10,7 @@ class node(Profile):
         description = "Profile for installing npm."
         homepage = "https://www.npmjs.com/"
         downloads = {}
-        requires = ['Bioto/profiles/atom']
+        #requires = ['Bioto/profiles/atom']
 
     def install_construct(self):
         logging.info('Installing {}'.format(self.__class__.__name__))
