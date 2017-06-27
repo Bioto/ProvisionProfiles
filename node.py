@@ -12,17 +12,17 @@ class node(Profile):
         downloads = {}
         requires = ['Bioto/profiles/atom']
 
-    def install_pre(self):
+    def install_construct(self):
         logging.info('Installing {}'.format(self.__class__.__name__))
 
-    def install_mac(self):
+    def install(self):
         return self.install_package('brew', 'node')
 
     def install_linux(self):
         return self.install_package(['pacman', 'yum'],
                                     ['nodejs', 'npm'])
 
-    def install_post(self):
+    def install_desconstructor(self):
         logging.info('Finished installing {}'.format(self.__class__.__name__))
 
 
