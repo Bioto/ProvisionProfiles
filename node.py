@@ -16,7 +16,8 @@ class node(Profile):
         logging.info('Installing {}'.format(self.__class__.__name__))
 
     def install(self):
-        return self.install_package('brew', 'node')
+        print('install')
+        #return self.install_package('brew', 'node')
 
     def install_linux(self):
         return self.install_package(['pacman', 'yum'],
