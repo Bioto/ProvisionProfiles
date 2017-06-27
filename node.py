@@ -1,9 +1,9 @@
 import logging
 
-from provision.profiles import BaseProfile
+from provision import Profile
 
 
-class node(BaseProfile):
+class node(Profile):
     software = []
 
     class Meta:
