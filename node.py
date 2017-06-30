@@ -10,6 +10,12 @@ class node(Profile):
         description = "Profile for installing npm."
         homepage = "https://www.npmjs.com/"
         downloads = {}
+        software = {
+            'brew': [
+                ('uninstall', 'wget'),
+                ('install', 'wget')
+            ]
+        }
         #requires = ['Bioto/profiles/atom']
 
     def install_construct(self):
