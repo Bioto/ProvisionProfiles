@@ -3,7 +3,7 @@ import logging
 from provision.profile import Profile
 
 
-class Web(Profile):
+class web(Profile):
     software = []
 
     class Meta:
@@ -33,5 +33,5 @@ class Web(Profile):
 
 
 if __name__ == "__main__":
-    runner = Web()
+    runner = web()
     runner.run()

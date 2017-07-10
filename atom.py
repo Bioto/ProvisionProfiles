@@ -5,7 +5,7 @@ import platform
 from provision.profile import Profile
 
 
-class Atom(Profile):
+class atom(Profile):
     software = []
 
     class Meta:
@@ -30,5 +30,5 @@ class Atom(Profile):
 
 
 if __name__ == "__main__":
-    profile = Atom()
+    profile = atom()
     profile.run()
