@@ -3,18 +3,16 @@ import logging
 from provision.profile import Profile
 
 
-class web(Profile):
+class pythonserver(Profile):
     software = []
 
     class Meta:
-        description = "My custom profile for installing my web development environment"
+        description = "My custom profile for installing my python server environment"
         downloads = {}
         software = {
             'brew': [
-                ('install', 'node', ())
-            ],
-            'npm': [
-                ('install', 'gulp', ('-g', ))
+                ('install', 'postgres', ()),
+                ('install', 'python3', ())
             ]
         }
         requires = [
@@ -28,10 +26,18 @@ class web(Profile):
         logging.info('Installing atom packages...')
 
         self.packages('install', [
-            ('apm', 'Sublime-Style-Column-Selection', ()),
-            ('apm', 'atom-beautify', ()),
-            ('apm', 'atom-typescript', ()),
-            ('apm', 'emmet', ())
+            ('apm', [
+                'autocomplete-python',
+                'linter-pylint'
+            ], ()),
+            ('pip', [
+                'virtualenv',
+                'virtualenvwrapper'
+            ], ()),
+            ('pip3', [
+                'virtualenv',
+                'virtualenvwrapper'
+            ], ()),
         ])
 
     def install_desconstructor(self):
@@ -39,5 +45,5 @@ class web(Profile):
 
 
 if __name__ == "__main__":
-    runner = web()
+    runner = pythonserver()
     runner.run()
