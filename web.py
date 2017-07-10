@@ -26,7 +26,14 @@ class web(Profile):
         logging.info('Installing {}'.format(self.__class__.__name__))
 
     def install(self):
-        pass
+        logging.info('Installing atom packages...')
+
+        self.packages('install', [
+            ('apm', 'Sublime-Style-Column-Selection', ()),
+            ('apm', 'atom-beautify', ()),
+            ('apm', 'atom-typescript', ()),
+            ('apm', 'emmet', ())
+        ])
 
     def install_desconstructor(self):
         logging.info('Finished installing {}'.format(self.__class__.__name__))
