@@ -1,52 +1,34 @@
 import logging
-
-from provision import distribution
-from provision.tools import does_package_exist
-from provision.managers.packages import Yum
-from provision.profiles import BaseProfile
+import platform
 
 
-class atom(BaseProfile):
+from provision.profile import Profile
+
+
+class Atom(Profile):
     software = []
-#        {
-#            'manager': 'yaourt',
-#            'install': ['wget'],
-#            'uninstall': ['wget']
-#        }
 
     class Meta:
-        description = "Profile for installing atom."
-        homepage = "https://atom.io/"
+        description = "Atom Installer \w atom cli + apm cli"
         downloads = {
-            'mac': 'http://atom.io/download/mac',
-            'debian': 'https://atom.io/download/deb'
+            'mac': 'http://atom.io/download/mac'
         }
+        software = {}
+        requires = []
 
-    def install_pre(self):
-        logging.info('Installing atom')
+    def install_construct(self):
+        logging.info('Installing {}'.format(self.__class__.__name__))
 
-    def install_mac(self):
-        self.move(self.downloads.mac.unzip(), '/Applications/')
+    def install(self):
+        if platform.system() == 'Darwin':
+            self.move(self.downloads.mac.unzip() + '/*', '/Applications/')
+            self.system('ln -s /Applications/Atom.app/Contents/Resources/app/atom.sh /usr/local/bin/atom')
+            self.system('ln -s /Applications/Atom.app/Contents/Resources/app/apm/bin/apm /usr/local/bin/apm')
 
-    def install_linux(self):
-        if distribution == 'arch':
-            return self.install_package(['pacman'], 'atom')
-
-        if does_package_exist('yum'):
-            installer = Yum()
-            installer._raw_install(self.downloads.debian)
-
-        if any(x in distribution for x in ['debian', 'ubuntu']):
-            self.system(
-                'cd {} && dpkg -i {}'.format(self.downloads.debian.folder(),
-                                             self.downloads.debian))
-
-        return
-
-    def install_post(self):
-        logging.info('Finished installing atom')
+    def install_desconstructor(self):
+        logging.info('Finished installing {}'.format(self.__class__.__name__))
 
 
 if __name__ == "__main__":
-    a = atom()
-    a.run()
+    profile = Atom()
+    profile.run()
