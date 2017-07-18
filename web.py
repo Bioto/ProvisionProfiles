@@ -8,33 +8,15 @@ class web(Profile):
 
     class Meta:
         description = "My custom profile for installing my web development environment"
-        downloads = {}
-        software = {
-            'brew': [
-                ('install', 'node', ())
-            ],
-            'npm': [
-                ('install', 'gulp', ('-g', ))
-            ]
-        }
-        requires = [
-            ('https://github.com/Bioto/ProvisionProfiles', 'atom')
-        ]
 
-    def install_construct(self):
+    def install_construct(self, resume):
         logging.info('Installing {}'.format(self.__class__.__name__))
 
-    def install(self):
+    def install(self, resume):
         logging.info('Installing atom packages...')
-
-        self.packages('install', [
-            ('apm', 'Sublime-Style-Column-Selection', ()),
-            ('apm', 'atom-beautify', ()),
-            ('apm', 'atom-typescript', ()),
-            ('apm', 'emmet', ())
-        ])
-
-    def install_desconstructor(self):
+        print(resume)
+        
+    def install_desconstructor(self, resume):
         logging.info('Finished installing {}'.format(self.__class__.__name__))
 
 

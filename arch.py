@@ -1,4 +1,5 @@
 import logging
+import pexpect
 
 from provision.profile import Profile
 
@@ -13,60 +14,65 @@ class arch(Profile):
     def install_construct(self):
         logging.info('Installing {}'.format(self.__class__.__name__))
 
-    def install(self):
+    def install(self, resume=False):
         logging.info('Starting installer')
 
-        # Set the system time
-        self.system('timedatectl set-ntp true')
+        if not resume:
+            # Set the system time
+            self.system('timedatectl set-ntp true')
 
-        # Specify drive
-        self.system('DRIVE=/dev/sda')
+            # Specify drive
+            self.system('DRIVE=/dev/sda')
 
-        # Format drive
-        self.system('sudo dd if=/dev/zero of=$DRIVE bs=512 count=1')
-        self.system('sudo parted --script -s $DRIVE mklabel gpt mkpart ' +
-                    ' primary 1MiB 512MiB mkpart primary 512MiB 1024MiB ' +
-                    'mkpart primary 1024MiB 6048MiB')
-        self.system('sudo partprobe /dev/sda')
-        self.system('sudo mkfs.ext2 /dev/sda1')
-        self.system('sudo swapon /dev/sda2')
-        self.system('sudo swapon /dev/sda2')
-        self.system('sudo mkfs.ext4 /dev/sda3')
-        self.system('sudo parted /dev/sda1 set 1 boot on')
-        self.system('sudo partprobe /dev/sda')
+            # Format drive
+            self.system('sudo dd if=/dev/zero of=$DRIVE bs=512 count=1')
+            self.system('sudo parted --script -s $DRIVE mklabel gpt mkpart ' +
+                        ' primary 1MiB 512MiB mkpart primary 512MiB 1024MiB ' +
+                        'mkpart primary 1024MiB 6048MiB')
+            self.system('sudo partprobe /dev/sda')
+            self.system('sudo mkfs.ext2 /dev/sda1')
+            self.system('sudo swapon /dev/sda2')
+            self.system('sudo swapon /dev/sda2')
+            self.system('sudo mkfs.ext4 /dev/sda3')
+            self.system('sudo parted /dev/sda1 set 1 boot on')
+            self.system('sudo partprobe /dev/sda')
 
-        # Mount the drive
-        self.system('mount /dev/sda3 /mnt')
-        self.system('mkdir /mnt/boot')
-        self.system('mount /dev/sda1 /mnt/boot')
+            # Mount the drive
+            self.system('mount /dev/sda3 /mnt')
+            self.system('mkdir /mnt/boot')
+            self.system('mount /dev/sda1 /mnt/boot')
 
-        # Install Arch
-        self.system('pacstrap /mnt base')
-        self.system('genfstab -U /mnt >> /mnt/etc/fstab')
-        self.system('arch-chroot /mnt')
+            # Install Arch
+            self.system('pacstrap /mnt base')
+            self.system('genfstab -U /mnt >> /mnt/etc/fstab')
+            self.system('mv bins.zip /mnt/home/')
+            self.system('mv arch.py /mnt/home/')
+            self.system('cd /mnt/home')
+            self.system('unzip binz.zip')
+            self.system = pexpect.spawn('arch-chroot /mnt')
+        else:
+            # Link
+            self.system('ln -sf /usr/share/zoneinfo/US/Pacific /etc/localtime')
+            self.system('hwclock --systohc')
+            self.system('locale-gen')
 
-        # Link
-        self.system('ln -sf /usr/share/zoneinfo/US/Pacific /etc/localtime')
-        self.system('hwclock --systohc')
-        self.system('locale-gen')
+            # Setup kernal
+            self.system('sudo touch /etc/hostname')
+            self.system('sudo echo "brain" > /etc/hostname')
+            self.system('mkinitcpio -p linux')
 
-        # Setup kernal
-        self.system('sudo touch /etc/hostname')
-        self.system('sudo echo "brain" > /etc/hostname')
-        self.system('mkinitcpio -p linux')
+            # Set root user
+            self.system('echo "Please set your root password:"')
+            self.system('passwd')
 
-        # Set root user
-        self.system('echo "Please set your root password:"')
-        self.system('passwd')
-
-        # Install the things
-        self.system('pacman -S syslinux gptfdisk')
-        self.system('syslinux-install_update -i -a -m')
+            # Install the things
+            self.system('pacman -S syslinux gptfdisk')
+            self.system('syslinux-install_update -i -a -m')
 
     def install_desconstructor(self):
         logging.info('Finished installing {}'.format(self.__class__.__name__))
 
 
 if __name__ == "__main__":
-    runner = arch()
+    runner = arch(resume=True)
     runner.run()
